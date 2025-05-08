@@ -1,0 +1,70 @@
+{
+  "name": "shubhamc4/cgrate-laravel",
+  "version": "1.0.0",
+  "description": "Laravel package for integrating with Cgrate payment service (543 Konse Konse)",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Shubham Chaudhary"
+    }
+  ],
+  "keywords": [
+    "cgrate payment service",
+    "konse konse",
+    "543 payment service",
+    "laravel",
+    "package",
+    "library",
+    "soap",
+    "php"
+  ],
+  "homepage": "https://github.com/shubhamc4/cgrate-laravel",
+  "support": {
+    "issues": "https://github.com/shubhamc4/cgrate-laravel/issues",
+    "source": "https://github.com/shubhamc4/cgrate-laravel"
+  },
+  "autoload": {
+    "psr-4": {
+      "Cgrate\\Laravel\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Cgrate\\Laravel\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": "^8.1",
+    "ext-soap": "*",
+    "illuminate/support": "^9.0|^10.0|^11.0|^12.0"
+  },
+  "require-dev": {
+    "laravel/pint": "^1.0",
+    "orchestra/testbench": "^8.0|^9.0",
+    "pestphp/pest": "^2.0",
+    "pestphp/pest-plugin-laravel": "^2.0"
+  },
+  "scripts": {
+    "format": "pint",
+    "test": "pest"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Cgrate\\Laravel\\CgrateServiceProvider"
+      ],
+      "aliases": {
+        "Cgrate": "Cgrate\\Laravel\\Facades\\Cgrate"
+      }
+    }
+  },
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
