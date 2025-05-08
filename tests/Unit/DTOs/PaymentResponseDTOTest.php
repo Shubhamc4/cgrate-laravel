@@ -31,30 +31,20 @@ it('creates a payment response DTO from array response', function (): void {
         ->and($dto->paymentID)->toBe('PAY-789012');
 });
 
-it('creates a payment response DTO from stdClass response', function (): void {
-    $response = (object) [
+it('handles missing optional fields in response', function (): void {
+    $response = [
         'responseCode' => 0,
         'responseMessage' => 'Payment successful',
-        'paymentID' => 'PAY-345678',
     ];
 
     $dto = PaymentResponseDTO::fromResponse($response);
 
     expect($dto->responseCode)->toBe(ResponseCode::SUCCESS)
         ->and($dto->responseMessage)->toBe('Payment successful')
-        ->and($dto->paymentID)->toBe('PAY-345678');
-});
-
-it('handles missing optional fields in response', function (): void {
-    $response = [
-        'responseCode' => 0,
-    ];
-
-    $dto = PaymentResponseDTO::fromResponse($response);
-
-    expect($dto->responseCode)->toBe(ResponseCode::SUCCESS)
-        ->and($dto->responseMessage)->toBe('')
-        ->and($dto->paymentID)->toBe('');
+        ->and($dto->paymentID)->toBe(null)
+        ->and($dto->customerMobile)->toBe(null)
+        ->and($dto->transactionReference)->toBe(null)
+        ->and($dto->transactionAmount)->toBe(null);
 });
 
 it('correctly identifies successful responses', function (): void {

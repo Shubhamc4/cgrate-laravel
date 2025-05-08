@@ -7,14 +7,14 @@ namespace Cgrate\Laravel\DTOs;
 /**
  * Data Transfer Object for payment request to Cgrate API.
  */
-final class PaymentRequestDTO
+final readonly class PaymentRequestDTO
 {
     /**
      * Create a new payment request DTO.
      *
-     * @param  float  $transactionAmount  The amount of the transaction
-     * @param  string  $customerMobile  The mobile number of the customer
-     * @param  string  $paymentReference  The unique reference for the payment
+     * @param  float  $transactionAmount  The amount of the transaction (must be positive)
+     * @param  string  $customerMobile  The mobile number of the customer (should be in format 2609XXXXXXXX)
+     * @param  string  $paymentReference  The unique reference for the payment (should be unique per transaction)
      */
     public function __construct(
         public readonly float $transactionAmount,
@@ -25,9 +25,9 @@ final class PaymentRequestDTO
     /**
      * Create a new payment request DTO.
      *
-     * @param  float  $transactionAmount  The amount of the transaction
-     * @param  string  $customerMobile  The mobile number of the customer
-     * @param  string  $paymentReference  The unique reference for the payment
+     * @param  float  $transactionAmount  The amount of the transaction (must be positive)
+     * @param  string  $customerMobile  The mobile number of the customer (should be in format 2609XXXXXXXX)
+     * @param  string  $paymentReference  The unique reference for the payment (should be unique per transaction)
      * @return self New payment request DTO instance
      */
     public static function create(

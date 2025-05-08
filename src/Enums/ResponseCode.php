@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Cgrate\Laravel\Enums;
 
-use UnitEnum;
+use BackedEnum;
 
 /**
  * This enum defines all possible response codes that can be returned
@@ -35,10 +35,13 @@ enum ResponseCode: int
     case INVALID_VOUCHER_PROVIDER = 56;
     case INVALID_DISTRIBUTION_CHANNEL = 101;
     case USSD_TRANSACTION_NOT_AVAILABLE = 102;
+    case TRANSACTION_REFERENCE_NOT_UNIQUE = 104;
+    case INVALID_TRANSACTION_REFERENCE = 106;
     case RECONCILIATION_FAILED = 151;
     case NO_RECONCILIATION_FOUND = 152;
     case RECONCILIATION_FLAG_INCONSISTENT = 153;
     case ERROR_RECEIVING_RECONCILIATION_TOTAL = 154;
+    case NO_TRANSACTIONS_FOUND = 213;
 
     /**
      * Create a ResponseCode enum from a string or integer value.
@@ -65,12 +68,12 @@ enum ResponseCode: int
     /**
      * Check if this response code matches another value.
      *
-     * @param  null|string|UnitEnum  $value  The value to compare with
+     * @param  null|int|string|BackedEnum  $value  The value to compare with
      * @return bool True if matches, false otherwise
      */
-    public function is(null|int|string|UnitEnum $value): bool
+    public function is(null|int|string|BackedEnum $value): bool
     {
-        if (! $value instanceof UnitEnum && $value !== null) {
+        if (! $value instanceof BackedEnum && $value !== null) {
             $value = self::fromValue($value);
         }
 
@@ -106,10 +109,13 @@ enum ResponseCode: int
             self::INVALID_VOUCHER_PROVIDER => 'Invalid Voucher Provider',
             self::INVALID_DISTRIBUTION_CHANNEL => 'Invalid distribution channel',
             self::USSD_TRANSACTION_NOT_AVAILABLE => 'USSD transaction not available',
+            self::TRANSACTION_REFERENCE_NOT_UNIQUE => 'Transaction reference not unique, please verify transaction through query transaction',
+            self::INVALID_TRANSACTION_REFERENCE => 'Invalid transaction reference',
             self::RECONCILIATION_FAILED => 'Reconciliation failed',
             self::NO_RECONCILIATION_FOUND => 'No reconciliation found',
             self::RECONCILIATION_FLAG_INCONSISTENT => 'Reconciliation flag not consistent with count',
             self::ERROR_RECEIVING_RECONCILIATION_TOTAL => 'Error receiving reconciliation total',
+            self::NO_TRANSACTIONS_FOUND => 'No transactions found',
         };
     }
 }

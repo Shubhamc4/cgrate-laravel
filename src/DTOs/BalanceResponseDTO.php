@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Cgrate\Laravel\DTOs;
 
 use Cgrate\Laravel\Enums\ResponseCode;
-use stdClass;
 
 /**
  * Data Transfer Object for balance inquiry response from Cgrate API.
  */
-final class BalanceResponseDTO
+final readonly class BalanceResponseDTO
 {
     /**
      * Create a new balance response DTO.
@@ -20,25 +19,23 @@ final class BalanceResponseDTO
      * @param  float|null  $balance  The account balance, if successful
      */
     public function __construct(
-        public readonly ResponseCode $responseCode,
-        public readonly string $responseMessage,
-        public readonly ?float $balance,
+        public ResponseCode $responseCode,
+        public string $responseMessage,
+        public ?float $balance,
     ) {}
 
     /**
      * Create a new balance response DTO from an API response.
      *
-     * @param  array|stdClass  $response  The raw response from the API
+     * @param  array  $response  The raw response from the API
      * @return self New balance response DTO instance
      */
-    public static function fromResponse(array|stdClass $response): self
+    public static function fromResponse(array $response): self
     {
-        $data = is_object($response) ? (array) $response : $response;
-
         return new self(
-            responseCode: ResponseCode::fromValue($data['responseCode']),
-            responseMessage: $data['responseMessage'] ?? '',
-            balance: isset($data['balance']) ? (float) $data['balance'] : null
+            responseCode: ResponseCode::fromValue($response['responseCode']),
+            responseMessage: $response['responseMessage'],
+            balance: isset($response['balance']) ? (float) $response['balance'] : null
         );
     }
 
@@ -50,5 +47,19 @@ final class BalanceResponseDTO
     public function isSuccessful(): bool
     {
         return $this->responseCode->is(ResponseCode::SUCCESS);
+    }
+
+    /**
+     * Convert the DTO to an array.
+     *
+     * @return array<string, int|string>
+     */
+    public function toArray(): array
+    {
+        return [
+            'responseCode' => $this->responseCode->value,
+            'responseMessage' => $this->responseCode->getDescription(),
+            'balance' => 'ZMW '.number_format($this->balance, 2),
+        ];
     }
 }

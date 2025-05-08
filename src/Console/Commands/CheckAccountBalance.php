@@ -6,9 +6,9 @@ namespace Cgrate\Laravel\Console\Commands;
 
 use Cgrate\Laravel\Exceptions\ConnectionException;
 use Cgrate\Laravel\Exceptions\InvalidResponseException;
-use Cgrate\Laravel\Exceptions\ValidationException;
 use Cgrate\Laravel\Facades\Cgrate;
 use Illuminate\Console\Command;
+use Illuminate\Validation\ValidationException;
 
 use function Laravel\Prompts\error;
 use function Laravel\Prompts\info;
@@ -30,12 +30,9 @@ class CheckAccountBalance extends Command
             if ($response->isSuccessful()) {
                 info('Account Information:');
                 table(
-                    ['Account Balance', 'Response Code', 'Response Message', 'Environment'],
+                    ['Response Code', 'Response Message', 'Account Balance', 'Environment'],
                     [
-                        [
-                            number_format($response->balance, 2).' ZMW',
-                            $response->responseCode->value,
-                            $response->responseMessage,
+                        $response->toArray() + [
                             (config('cgrate.test_mode') ? 'Testing' : 'Production'),
                         ],
                     ]

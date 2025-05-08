@@ -37,7 +37,7 @@ final class CgrateService
      * @param  array  $config  The configuration array
      *
      * @throws \Cgrate\Laravel\Exceptions\ConnectionException If connection to the API fails
-     * @throws \Cgrate\Laravel\Exceptions\ValidationException If configuration is invalid
+     * @throws \Illuminate\Validation\ValidationException If configuration is invalid
      */
     public function __construct(array $config)
     {
@@ -63,7 +63,7 @@ final class CgrateService
                 throw new InvalidResponseException('Unexpected response format from getAccountBalance');
             }
 
-            $dto = BalanceResponseDTO::fromResponse($response->return);
+            $dto = BalanceResponseDTO::fromResponse((array) $response->return);
 
             if (! $dto->isSuccessful()) {
                 throw InvalidResponseException::fromResponseCode($dto->responseCode);
@@ -83,7 +83,7 @@ final class CgrateService
      *
      * @throws \Cgrate\Laravel\Exceptions\ConnectionException If connection to the API fails
      * @throws \Cgrate\Laravel\Exceptions\InvalidResponseException If the API returns an error response
-     * @throws \Cgrate\Laravel\Exceptions\ValidationException If the payment request is invalid
+     * @throws \Illuminate\Validation\ValidationException If the payment request is invalid
      */
     public function processCustomerPayment(PaymentRequestDTO $payment): PaymentResponseDTO
     {
@@ -96,7 +96,11 @@ final class CgrateService
                 throw new InvalidResponseException('Unexpected response format from processCustomerPayment');
             }
 
-            $dto = PaymentResponseDTO::fromResponse($response->return);
+            $dto = PaymentResponseDTO::fromResponse((array) $response->return + [
+                'customerMobile' => $payment->customerMobile,
+                'transactionReference' => $payment->paymentReference,
+                'transactionAmount' => $payment->transactionAmount,
+            ]);
 
             if (! $dto->isSuccessful()) {
                 PaymentFailed::dispatch($payment, $dto->responseMessage, $dto->responseCode);
@@ -133,7 +137,9 @@ final class CgrateService
                 throw new InvalidResponseException('Unexpected response format from queryTransactionStatus');
             }
 
-            $dto = PaymentResponseDTO::fromResponse($response->return);
+            $dto = PaymentResponseDTO::fromResponse((array) $response->return + [
+                'transactionReference' => $transactionReference,
+            ]);
 
             if (! $dto->isSuccessful()) {
                 throw InvalidResponseException::fromResponseCode($dto->responseCode);
@@ -165,7 +171,9 @@ final class CgrateService
                 throw new InvalidResponseException('Unexpected response format from reverseCustomerPayment');
             }
 
-            $dto = ReversePaymentResponseDTO::fromResponse($response->return);
+            $dto = ReversePaymentResponseDTO::fromResponse((array) $response->return + [
+                'transactionReference' => $paymentReference,
+            ]);
 
             if (! $dto->isSuccessful()) {
                 throw InvalidResponseException::fromResponseCode($dto->responseCode);

@@ -20,10 +20,8 @@ final class PaymentReversed
      * Create a new event instance.
      *
      * @param  ReversePaymentResponseDTO  $response  The reverse payment response from CGrate API
-     * @param  string  $paymentReference  The original payment reference
      */
     public function __construct(
-        public readonly ReversePaymentResponseDTO $response,
-        public readonly string $paymentReference,
+        public readonly ReversePaymentResponseDTO $response
     ) {}
 }

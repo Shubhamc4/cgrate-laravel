@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Cgrate\Laravel\Validation;
 
-use Cgrate\Laravel\Exceptions\ValidationException;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Validator for CGrate configuration.
@@ -49,7 +49,7 @@ final class ConfigValidator
      * @param  array  $config  The configuration array to validate
      * @return array The validated and normalized configuration
      *
-     * @throws \Cgrate\Laravel\Exceptions\ValidationException If configuration is invalid
+     * @throws \Illuminate\Validation\ValidationException If configuration is invalid
      */
     public static function validate(array $config): array
     {
@@ -84,10 +84,7 @@ final class ConfigValidator
 
         // If there are errors, throw exception
         if (! empty($errors)) {
-            throw new ValidationException(
-                'Invalid CGrate configuration',
-                $errors
-            );
+            throw ValidationException::withMessages($errors);
         }
 
         return $config;

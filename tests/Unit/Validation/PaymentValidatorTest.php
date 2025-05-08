@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Cgrate\Laravel\DTOs\PaymentRequestDTO;
-use Cgrate\Laravel\Exceptions\ValidationException;
 use Cgrate\Laravel\Validation\PaymentValidator;
+use Illuminate\Validation\ValidationException;
 
 it('validates correct payment request', function (): void {
     $payment = new PaymentRequestDTO(

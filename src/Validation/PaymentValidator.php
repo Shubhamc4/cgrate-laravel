@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Cgrate\Laravel\Validation;
 
 use Cgrate\Laravel\DTOs\PaymentRequestDTO;
-use Cgrate\Laravel\Exceptions\ValidationException;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Validator for payment requests.
@@ -20,7 +20,7 @@ class PaymentValidator
      *
      * @param  PaymentRequestDTO  $payment  The payment request to validate
      *
-     * @throws \Cgrate\Laravel\Exceptions\ValidationException If validation fails
+     * @throws \Illuminate\Validation\ValidationException If validation fails
      */
     public static function validate(PaymentRequestDTO $payment): void
     {
@@ -39,10 +39,7 @@ class PaymentValidator
         }
 
         if (! empty($errors)) {
-            throw new ValidationException(
-                'Validation failed for payment request',
-                $errors
-            );
+            throw ValidationException::withMessages($errors);
         }
     }
 

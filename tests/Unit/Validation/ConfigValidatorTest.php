@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Cgrate\Laravel\Exceptions\ValidationException;
 use Cgrate\Laravel\Validation\ConfigValidator;
+use Illuminate\Validation\ValidationException;
 
 it('validates valid configuration', function () {
     $config = [
