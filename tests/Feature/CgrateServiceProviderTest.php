@@ -2,21 +2,22 @@
 
 declare(strict_types=1);
 
-use Cgrate\Laravel\Services\CgrateService;
+use CGrate\Laravel\Facades\CGrate;
+use CGrate\Php\Services\CGrateService;
 
-it('registers the Cgrate service', function (): void {
-    $service = app('cgrate');
-    expect($service)->toBeInstanceOf(CgrateService::class);
+it('registers the CGrate service', function (): void {
+    $service = app('CGrate');
+    expect($service)->toBeInstanceOf(CGrateService::class);
 });
 
-it('can access the Cgrate service through the facade', function (): void {
-    expect(fn () => Cgrate\Laravel\Facades\Cgrate::getFacadeRoot())
+it('can access the CGrate service through the facade', function (): void {
+    expect(fn () => CGrate::getFacadeRoot())
         ->not->toThrow(Exception::class);
 });
 
-it('merges the Cgrate configuration', function (): void {
+it('merges the CGrate configuration', function (): void {
     $config = config('cgrate');
     expect($config)->toBeArray()
-        ->and($config)->toHaveKeys(['username', 'password', 'endpoint', 'test_endpoint', 'test_mode', 'options'])
+        ->and($config)->toHaveKeys(['username', 'password', 'test_mode', 'options'])
         ->and($config['test_mode'])->toBeTrue();
 });

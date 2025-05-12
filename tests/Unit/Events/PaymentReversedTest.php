@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Cgrate\Laravel\DTOs\ReversePaymentResponseDTO;
-use Cgrate\Laravel\Enums\ResponseCode;
-use Cgrate\Laravel\Events\PaymentReversed;
+use CGrate\Laravel\Events\PaymentReversed;
+use CGrate\Php\DTOs\ReversePaymentResponseDTO;
+use CGrate\Php\Enums\ResponseCode;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Event;

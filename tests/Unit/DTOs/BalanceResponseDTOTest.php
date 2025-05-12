@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Cgrate\Laravel\DTOs\BalanceResponseDTO;
-use Cgrate\Laravel\Enums\ResponseCode;
+use CGrate\Php\DTOs\BalanceResponseDTO;
+use CGrate\Php\Enums\ResponseCode;
 
 it('creates a balance response DTO with constructor', function (): void {
     $dto = new BalanceResponseDTO(

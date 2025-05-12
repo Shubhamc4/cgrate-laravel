@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Cgrate\Laravel\Tests;
+namespace CGrate\Laravel\Tests;
 
-use Cgrate\Laravel\CgrateServiceProvider;
+use CGrate\Laravel\CGrateServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 abstract class TestCase extends Orchestra
@@ -18,7 +18,7 @@ abstract class TestCase extends Orchestra
     protected function getPackageProviders($app): array
     {
         return [
-            CgrateServiceProvider::class,
+            CGrateServiceProvider::class,
         ];
     }
 
@@ -37,17 +37,10 @@ abstract class TestCase extends Orchestra
             'prefix' => '',
         ]);
 
-        // Set Cgrate config
+        // Set CGrate config
+        $app['config']->set('cgrate', config('cgrate'));
         $app['config']->set('cgrate.username', 'test_username');
         $app['config']->set('cgrate.password', 'test_password');
         $app['config']->set('cgrate.test_mode', true);
-        $app['config']->set('cgrate.options', [
-            'soap_version' => SOAP_1_1,
-            'connection_timeout' => 30,
-            'keep_alive' => false,
-            'cache_wsdl' => WSDL_CACHE_NONE,
-            'trace' => true,
-            'exceptions' => true,
-        ]);
     }
 }

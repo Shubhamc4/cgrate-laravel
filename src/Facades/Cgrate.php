@@ -2,34 +2,35 @@
 
 declare(strict_types=1);
 
-namespace Cgrate\Laravel\Facades;
+namespace CGrate\Laravel\Facades;
 
-use Cgrate\Laravel\DTOs\BalanceResponseDTO;
-use Cgrate\Laravel\DTOs\PaymentRequestDTO;
-use Cgrate\Laravel\DTOs\PaymentResponseDTO;
-use Cgrate\Laravel\DTOs\ReversePaymentResponseDTO;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * Facade for interacting with the Cgrate payment service.
+ * Facade for interacting with the CGrate payment service.
  *
- * This facade provides a simple interface to interact with the Cgrate payment gateway.
+ * This facade provides a simple interface to interact with the CGrate payment gateway.
  * It handles payment processing, payment status check, payment reversal, and account balance queries.
  *
- * @method static BalanceResponseDTO getAccountBalance() Get the current account balance
- * @method static PaymentResponseDTO processCustomerPayment(PaymentRequestDTO $request) Process a payment for a customer
- * @method static PaymentResponseDTO queryTransactionStatus(string $transactionReference) Query the status of a transaction
- * @method static ReversePaymentResponseDTO reverseCustomerPayment(string $paymentReference) Reverse a previously processed payment
+ * @method  static  \CGrate\Php\DTOs\BalanceResponseDTO
+ * getAccountBalance()  Get the current account balance
+ * @method  static  \CGrate\Php\DTOs\PaymentResponseDTO
+ * processCustomerPayment(\CGrate\Php\DTOs\PaymentRequestDTO $request)
+ * Process a payment for a customer
+ * @method  static  \CGrate\Php\DTOs\PaymentResponseDTO
+ * queryTransactionStatus(string $transactionReference)  Query the status of a transaction
+ * @method  static  \CGrate\Php\DTOs\ReversePaymentResponseDTO
+ * reverseCustomerPayment(string $paymentReference)  Reverse a previously processed payment
  *
- * @see \Cgrate\Laravel\Services\CgrateService
+ * @see \CGrate\Php\Services\CGrateService
  */
-final class Cgrate extends Facade
+final class CGrate extends Facade
 {
     /**
      * Get the registered name of the component.
      */
     protected static function getFacadeAccessor(): string
     {
-        return 'cgrate';
+        return 'CGrate';
     }
 }

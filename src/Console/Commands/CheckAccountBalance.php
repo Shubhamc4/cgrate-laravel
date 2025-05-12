@@ -2,49 +2,67 @@
 
 declare(strict_types=1);
 
-namespace Cgrate\Laravel\Console\Commands;
+namespace CGrate\Laravel\Console\Commands;
 
-use Cgrate\Laravel\Exceptions\ConnectionException;
-use Cgrate\Laravel\Exceptions\InvalidResponseException;
-use Cgrate\Laravel\Facades\Cgrate;
+use CGrate\Laravel\Facades\CGrate;
+use CGrate\Php\Exceptions\ConnectionException;
+use CGrate\Php\Exceptions\InvalidResponseException;
+use CGrate\Php\Exceptions\ValidationException;
 use Illuminate\Console\Command;
-use Illuminate\Validation\ValidationException;
 
 use function Laravel\Prompts\error;
 use function Laravel\Prompts\info;
+use function Laravel\Prompts\note;
+use function Laravel\Prompts\spin;
 use function Laravel\Prompts\table;
 
 class CheckAccountBalance extends Command
 {
-    protected $signature = 'cgrate:balance';
+    protected $signature = 'cgrate:balance {--debug : Show detailed debug information}';
 
-    protected $description = 'Check current Cgrate account balance';
+    protected $description = 'Check current CGrate account balance';
 
     public function handle(): int
     {
-        info('Checking Cgrate account balance...');
+        info('Checking CGrate account balance...');
+
+        $result = null;
 
         try {
-            $response = Cgrate::getAccountBalance();
+            $result = spin(
+                fn () => CGrate::getAccountBalance(),
+                'Connecting to CGrate API...'
+            );
 
-            if ($response->isSuccessful()) {
-                info('Account Information:');
+            if ($result->isSuccessful()) {
+                info('✓ Successfully retrieved account balance');
+
+                $environment = config('cgrate.test_mode') ? 'Testing (Sandbox)' : 'Production (Live)';
+
+                $data = [
+                    'Environment' => $environment,
+                    'Response Code' => $result->responseCode->value,
+                    'Response Message' => $result->responseMessage,
+                    'Balance' => $result->displayBalance(),
+                    'Timestamp' => now()->format('Y-m-d H:i:s'),
+                ];
+
                 table(
-                    ['Response Code', 'Response Message', 'Account Balance', 'Environment'],
-                    [
-                        $response->toArray() + [
-                            (config('cgrate.test_mode') ? 'Testing' : 'Production'),
-                        ],
-                    ]
+                    ['Property', 'Value'],
+                    collect($data)->map(fn ($value, $key) => [$key, $value])->all()
                 );
+
+                return self::SUCCESS;
             } else {
-                error('Error retrieving balance: '.$response->responseMessage);
-                error('Response Code: '.$response->responseCode->value);
+                error("Error retrieving balance: {$result->responseMessage}");
+
+                note(
+                    "Response Code: {$result->responseCode->value}\n".
+                    'Environment: '.(config('cgrate.test_mode') ? 'Testing' : 'Production')
+                );
 
                 return self::FAILURE;
             }
-
-            return self::SUCCESS;
         } catch (ValidationException $e) {
             error('Configuration Error: '.$e->getMessage());
 
@@ -58,8 +76,12 @@ class CheckAccountBalance extends Command
             }
 
             return self::FAILURE;
-        } catch (ConnectionException|InvalidResponseException $e) {
-            error('Error: '.$e->getMessage());
+        } catch (ConnectionException $e) {
+            error('Connection Error: '.$e->getMessage());
+
+            return self::FAILURE;
+        } catch (InvalidResponseException $e) {
+            error('Invalid Response: '.$e->getMessage());
 
             return self::FAILURE;
         } catch (\Exception $e) {

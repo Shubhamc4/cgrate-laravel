@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Cgrate\Laravel\DTOs\PaymentResponseDTO;
-use Cgrate\Laravel\Enums\ResponseCode;
+use CGrate\Php\DTOs\PaymentResponseDTO;
+use CGrate\Php\Enums\ResponseCode;
 
 it('creates a payment response DTO with constructor', function (): void {
     $dto = new PaymentResponseDTO(

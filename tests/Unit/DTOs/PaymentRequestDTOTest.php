@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Cgrate\Laravel\DTOs\PaymentRequestDTO;
+use CGrate\Php\DTOs\PaymentRequestDTO;
 
 it('creates a payment request DTO with constructor', function (): void {
     $dto = new PaymentRequestDTO(

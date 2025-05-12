@@ -13,7 +13,7 @@ declare(strict_types=1);
 |
 */
 
-uses(Cgrate\Laravel\Tests\TestCase::class)->in('Feature', 'Unit');
+uses(CGrate\Laravel\Tests\TestCase::class)->in('Feature', 'Unit');
 
 /*
 |--------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/shubhamc4/cgrate-laravel.svg)](https://packagist.org/packages/shubhamc4/cgrate-laravel)
 [![License](https://img.shields.io/packagist/l/shubhamc4/cgrate-laravel.svg)](https://github.com/shubhamc4/cgrate-laravel/blob/main/LICENSE)
 
-A Laravel package for integrating with the CGrate payment service to process mobile money transactions in Zambia.
+A Laravel package for integrating with the CGrate payment service to process mobile money transactions in Zambia. This package provides a seamless Laravel wrapper around the [cgrate-php](https://github.com/Shubhamc4/cgrate-php) core package.
 
 ## Table of Contents
 
@@ -21,6 +21,7 @@ A Laravel package for integrating with the CGrate payment service to process mob
 - [Events](#events)
 - [Data Transfer Objects](#data-transfer-objects)
 - [Artisan Commands](#artisan-commands)
+- [Core PHP Package](#core-php-package)
 - [Changelog](#changelog)
 - [Credits](#credits)
 - [License](#license)
@@ -44,8 +45,8 @@ For detailed information on the CGrate SOAP API, including setup instructions, r
 
 ## Requirements
 
-- PHP 8.1 or higher
-- Laravel 9.0 or higher
+- PHP 8.2 or higher
+- Laravel 11.0 or higher
 - PHP SOAP extension
 
 ## Installation
@@ -56,14 +57,14 @@ You can install the package via composer:
 composer require shubhamc4/cgrate-laravel
 ```
 
-The package will automatically register its service provider and facade.
+The package will automatically register its service provider and facade through Laravel's package auto-discovery feature.
 
 ## Configuration
 
 Publish the configuration file:
 
 ```bash
-php artisan vendor:publish --provider="Cgrate\Laravel\CgrateServiceProvider"
+php artisan vendor:publish --provider="CGrate\Laravel\CGrateServiceProvider"
 ```
 
 This will create a `config/cgrate.php` configuration file in your application where you can modify the settings.
@@ -95,18 +96,18 @@ CGRATE_TEST_MODE=true                   # Set to false for production
 ### Getting Account Balance
 
 ```php
-use Cgrate\Laravel\Facades\Cgrate;
+use CGrate\Laravel\Facades\CGrate;
 
 // Get account balance
 try {
-    $response = Cgrate::getAccountBalance();
+    $response = CGrate::getAccountBalance();
 
     if ($response->isSuccessful()) {
         echo 'Account Balance: ' . $response->balance;
     } else {
         echo 'Error: ' . $response->responseMessage;
     }
-} catch (\Cgrate\Laravel\Exceptions\CgrateException $e) {
+} catch (\CGrate\Php\Exceptions\CGrateException $e) {
     echo 'API Error: ' . $e->getMessage();
 }
 ```
@@ -114,38 +115,38 @@ try {
 ### Processing a Payment
 
 ```php
-use Cgrate\Laravel\DTOs\PaymentRequestDTO;
-use Cgrate\Laravel\Facades\Cgrate;
+use CGrate\Php\DTOs\PaymentRequestDTO;
+use CGrate\Laravel\Facades\CGrate;
 
 // Create a payment request
 $payment = new PaymentRequestDTO(
-    transactionAmount: 10.00,
+    transactionAmount: 10.50,
     customerMobile: '260970000000', // Zambian mobile number format (without the + sign)
     paymentReference: 'INVOICE-123'
 );
 
 // Or use the factory method for convenience
 $payment = PaymentRequestDTO::create(
-    transactionAmount: 10.00,
+    transactionAmount: 10.50,
     customerMobile: '260970000000',
     paymentReference: 'INVOICE-123'
 );
 
 // Process the payment
 try {
-    $response = Cgrate::processCustomerPayment($payment);
+    $response = CGrate::processCustomerPayment($payment);
 
     if ($response->isSuccessful()) {
         echo 'Payment successful! Payment ID: ' . $response->paymentID;
     } else {
         echo 'Payment failed: ' . $response->responseMessage;
     }
-} catch (\Illuminate\Validation\ValidationException $e) {
+} catch (\CGrate\Php\Exceptions\ValidationException $e) {
     echo 'Validation Error: ' . $e->getMessage();
     foreach ($e->errors() as $field => $errors) {
         echo "\n- {$field}: " . implode(', ', $errors);
     }
-} catch (\Cgrate\Laravel\Exceptions\CgrateException $e) {
+} catch (\CGrate\Php\Exceptions\CGrateException $e) {
     echo 'API Error: ' . $e->getMessage();
 }
 ```
@@ -153,11 +154,11 @@ try {
 ### Checking Transaction Status
 
 ```php
-use Cgrate\Laravel\Facades\Cgrate;
+use CGrate\Laravel\Facades\CGrate;
 
 // Query transaction status
 try {
-    $response = Cgrate::queryTransactionStatus('TRANSACTION-REF-123');
+    $response = CGrate::queryTransactionStatus('INVOICE-123');
 
     if ($response->isSuccessful()) {
         echo 'Transaction Status: Success';
@@ -165,7 +166,7 @@ try {
     } else {
         echo 'Status query failed: ' . $response->responseMessage;
     }
-} catch (\Cgrate\Laravel\Exceptions\CgrateException $e) {
+} catch (\CGrate\Php\Exceptions\CGrateException $e) {
     echo 'API Error: ' . $e->getMessage();
 }
 ```
@@ -173,46 +174,31 @@ try {
 ### Reversing a Payment
 
 ```php
-use Cgrate\Laravel\Facades\Cgrate;
+use CGrate\Laravel\Facades\CGrate;
 
 // Reverse a payment
 try {
-    $response = Cgrate::reverseCustomerPayment('PAYMENT-REF-123');
+    $response = CGrate::reverseCustomerPayment('INVOICE-123');
 
     if ($response->isSuccessful()) {
         echo 'Payment reversed successfully';
     } else {
         echo 'Reversal failed: ' . $response->responseMessage;
     }
-} catch (\Cgrate\Laravel\Exceptions\CgrateException $e) {
+} catch (\CGrate\Php\Exceptions\CGrateException $e) {
     echo 'API Error: ' . $e->getMessage();
 }
 ```
 
 ## Events
 
-The package dispatches the following events that you can listen for in your application:
+The package includes following events that you can dispatch and listen for in your application:
 
 | Event              | Description                             | Properties                                                                                                                           |
 | ------------------ | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | `PaymentProcessed` | Dispatched when a payment is successful | `response` (PaymentResponseDTO), `paymentData` (array)                                                                               |
-| `PaymentFailed`    | Dispatched when a payment fails         | `request` (PaymentRequestDTO), `errorMessage` (string), `responseCode` (ResponseCode or null), `exception` (CgrateException or null) |
+| `PaymentFailed`    | Dispatched when a payment fails         | `request` (PaymentRequestDTO), `errorMessage` (string), `responseCode` (ResponseCode or null), `exception` (CGrateException or null) |
 | `PaymentReversed`  | Dispatched when a payment is reversed   | `response` (ReversePaymentResponseDTO), `paymentReference` (string)                                                                  |
-
-### Example: Listening for Events
-
-Register your event listeners in your `EventServiceProvider`:
-
-```php
-use App\Listeners\HandlePaymentProcessed;
-use Cgrate\Laravel\Events\PaymentProcessed;
-
-protected $listen = [
-    PaymentProcessed::class => [
-        HandlePaymentProcessed::class,
-    ],
-];
-```
 
 ## Data Transfer Objects
 
@@ -237,6 +223,12 @@ php artisan cgrate:balance
 ```
 
 This command will check your account balance and display it in the console.
+
+## Core PHP Package
+
+This Laravel package is a wrapper around the [cgrate-php](https://github.com/Shubhamc4/cgrate-php) core package. The core package handles all the low-level SOAP API interactions, request validation, and response parsing.
+
+If you need to use CGrate with a non-Laravel PHP application, you can use the core package directly. See the [cgrate-php repository](https://github.com/Shubhamc4/cgrate-php) for documentation on direct usage.
 
 ## Changelog
 

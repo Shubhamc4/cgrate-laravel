@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Cgrate\Laravel\Events;
+namespace CGrate\Laravel\Events;
 
-use Cgrate\Laravel\DTOs\ReversePaymentResponseDTO;
+use CGrate\Php\DTOs\ReversePaymentResponseDTO;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 /**
  * Event triggered when a payment is successfully reversed.
  */
-final class PaymentReversed
+final readonly class PaymentReversed
 {
     use Dispatchable;
     use SerializesModels;
@@ -22,6 +22,6 @@ final class PaymentReversed
      * @param  ReversePaymentResponseDTO  $response  The reverse payment response from CGrate API
      */
     public function __construct(
-        public readonly ReversePaymentResponseDTO $response
+        public ReversePaymentResponseDTO $response
     ) {}
 }

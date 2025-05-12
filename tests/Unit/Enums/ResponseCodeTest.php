@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Cgrate\Laravel\Enums\ResponseCode;
+use CGrate\Php\Enums\ResponseCode;
 
 it('creates enum from integer value', function (): void {
     $responseCode = ResponseCode::fromValue(0);

@@ -1,7 +1,7 @@
 {
   "name": "shubhamc4/cgrate-laravel",
-  "version": "1.0.0",
-  "description": "Laravel package for integrating with Cgrate payment service (543 Konse Konse)",
+  "version": "2.0.0",
+  "description": "Laravel package for integrating with CGrate payment service (543 Konse Konse)",
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -26,17 +26,18 @@
   },
   "autoload": {
     "psr-4": {
-      "Cgrate\\Laravel\\": "src/"
+      "CGrate\\Laravel\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Cgrate\\Laravel\\Tests\\": "tests/"
+      "CGrate\\Laravel\\Tests\\": "tests/"
     }
   },
   "require": {
-    "php": "^8.1",
-    "ext-soap": "*"
+    "php": "^8.2",
+    "ext-soap": "*",
+    "shubhamc4/cgrate-php": "^2.0"
   },
   "require-dev": {
     "laravel/pint": "^1.0",
@@ -51,10 +52,10 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Cgrate\\Laravel\\CgrateServiceProvider"
+        "CGrate\\Laravel\\CGrateServiceProvider"
       ],
       "aliases": {
-        "Cgrate": "Cgrate\\Laravel\\Facades\\Cgrate"
+        "CGrate": "CGrate\\Laravel\\Facades\\CGrate"
       }
     }
   },

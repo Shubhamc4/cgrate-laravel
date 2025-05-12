@@ -2,44 +2,43 @@
 
 declare(strict_types=1);
 
-namespace Cgrate\Laravel;
+namespace CGrate\Laravel;
 
-use Cgrate\Laravel\Console\Commands\CheckAccountBalance;
-use Cgrate\Laravel\Services\CgrateService;
+use CGrate\Laravel\Console\Commands\CheckAccountBalance;
+use CGrate\Php\Config\CGrateConfig;
+use CGrate\Php\Services\CGrateService;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 
-final class CgrateServiceProvider extends ServiceProvider
+final class CGrateServiceProvider extends ServiceProvider
 {
-    /**
-     * The commands to be registered.
-     *
-     * @var array<class-string>
-     */
     protected array $commands = [
         CheckAccountBalance::class,
     ];
 
-    /**
-     * Register the Cgrate service with the Laravel container.
-     */
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/cgrate.php', 'cgrate');
 
-        $this->app->singleton('cgrate', function ($app) {
-            return new CgrateService(Config::get('cgrate'));
+        $this->app->singleton('CGrate', function (): CGrateService {
+            $config = Config::get('cgrate');
+
+            return new CGrateService(
+                CGrateConfig::create(
+                    $config['username'],
+                    $config['password'],
+                    $config['test_mode'],
+                    $config['options'],
+                )
+            );
         });
     }
 
-    /**
-     * Bootstrap the Cgrate service.
-     */
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../config/cgrate.php' => config_path('cgrate.php'),
+                __DIR__.'/../config/cgrate.php' => config_path(path: 'cgrate.php'),
             ], 'config');
 
             $this->commands($this->commands);

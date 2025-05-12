@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Cgrate\Laravel\DTOs\PaymentResponseDTO;
-use Cgrate\Laravel\Enums\ResponseCode;
-use Cgrate\Laravel\Events\PaymentProcessed;
+use CGrate\Laravel\Events\PaymentProcessed;
+use CGrate\Php\DTOs\PaymentResponseDTO;
+use CGrate\Php\Enums\ResponseCode;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -51,8 +51,6 @@ it('can be dispatched and listened to', function () {
         'paymentReference' => 'INVOICE-123',
     ];
 
-    $wasDispatched = false;
-
     // Fake Event facade
     Event::fake([
         PaymentProcessed::class,
@@ -64,6 +62,6 @@ it('can be dispatched and listened to', function () {
     // Assert it was dispatched
     Event::assertDispatched(PaymentProcessed::class, function ($event) use ($response, $paymentData) {
         return $event->response === $response &&
-               $event->paymentData === $paymentData;
+            $event->paymentData === $paymentData;
     });
 });

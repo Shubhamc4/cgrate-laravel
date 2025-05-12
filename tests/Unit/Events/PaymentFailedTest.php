@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Cgrate\Laravel\DTOs\PaymentRequestDTO;
-use Cgrate\Laravel\Enums\ResponseCode;
-use Cgrate\Laravel\Events\PaymentFailed;
-use Cgrate\Laravel\Exceptions\CgrateException;
+use CGrate\Laravel\Events\PaymentFailed;
+use CGrate\Php\DTOs\PaymentRequestDTO;
+use CGrate\Php\Enums\ResponseCode;
+use CGrate\Php\Exceptions\InvalidResponseException;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -57,7 +57,7 @@ it('can be instantiated with exception', function () {
         paymentReference: 'INVOICE-123'
     );
 
-    $exception = new CgrateException('Connection error');
+    $exception = new InvalidResponseException('Connection error', code: 1);
 
     $event = new PaymentFailed(
         $request,
@@ -90,6 +90,6 @@ it('can be dispatched and listened to', function () {
     // Assert it was dispatched
     Event::assertDispatched(PaymentFailed::class, function ($event) use ($request) {
         return $event->request === $request &&
-               $event->errorMessage === 'Payment failed';
+            $event->errorMessage === 'Payment failed';
     });
 });

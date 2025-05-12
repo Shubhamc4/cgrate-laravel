@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Cgrate\Laravel\Events;
+namespace CGrate\Laravel\Events;
 
-use Cgrate\Laravel\DTOs\PaymentResponseDTO;
+use CGrate\Php\DTOs\PaymentResponseDTO;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 /**
  * Event triggered when a payment is successfully processed.
  */
-final class PaymentProcessed
+final readonly class PaymentProcessed
 {
     use Dispatchable;
     use SerializesModels;
@@ -23,7 +23,7 @@ final class PaymentProcessed
      * @param  array  $paymentData  The original payment request data
      */
     public function __construct(
-        public readonly PaymentResponseDTO $response,
-        public readonly array $paymentData,
+        public PaymentResponseDTO $response,
+        public array $paymentData,
     ) {}
 }

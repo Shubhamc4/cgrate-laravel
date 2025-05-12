@@ -2,6 +2,12 @@
 
 All notable changes to `cgrate-laravel` will be documented in this file.
 
+## 2.0.0 - 2025-05-12
+
+feat: Introduce PHP 8.2+ compatible shubhamc4/cgrate-php v2.0
+
+- This release adds shubhamc4/cgrate-php (version 2.0) to the project's composer dependencies. This version is required for full compatibility and optimal performance on PHP 8.2 and subsequent releases.
+
 ## 1.0.0 - 2025-05-08
 
 ### Added

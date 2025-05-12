@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Cgrate\Laravel\DTOs\ReversePaymentResponseDTO;
-use Cgrate\Laravel\Enums\ResponseCode;
+use CGrate\Php\DTOs\ReversePaymentResponseDTO;
+use CGrate\Php\Enums\ResponseCode;
 
 it('creates a reverse payment response DTO with constructor', function (): void {
     $dto = new ReversePaymentResponseDTO(
