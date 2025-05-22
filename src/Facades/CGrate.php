@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Facade;
  * queryTransactionStatus(string $transactionReference)  Query the status of a transaction
  * @method  static  \CGrate\Php\DTOs\ReversePaymentResponseDTO
  * reverseCustomerPayment(string $paymentReference)  Reverse a previously processed payment
+ * @method  static  string generateTransactionReference(string $prefix = 'CG')
+ * Generate a unique transaction reference
  *
  * @see \CGrate\Php\Services\CGrateService
  */

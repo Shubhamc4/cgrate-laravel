@@ -196,9 +196,9 @@ The package includes following events that you can dispatch and listen for in yo
 
 | Event              | Description                             | Properties                                                                                                                           |
 | ------------------ | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `PaymentProcessed` | Dispatched when a payment is successful | `response` (PaymentResponseDTO), `paymentData` (array)                                                                               |
-| `PaymentFailed`    | Dispatched when a payment fails         | `request` (PaymentRequestDTO), `errorMessage` (string), `responseCode` (ResponseCode or null), `exception` (CGrateException or null) |
-| `PaymentReversed`  | Dispatched when a payment is reversed   | `response` (ReversePaymentResponseDTO), `paymentReference` (string)                                                                  |
+| `PaymentProcessed` | Dispatch this when a payment is successful | `response` (PaymentResponseDTO), `paymentData` (array)                                                                               |
+| `PaymentFailed`    | Dispatch this when a payment fails         | `request` (PaymentRequestDTO), `errorMessage` (string), `responseCode` (ResponseCode or null), `exception` (CGrateException or null) |
+| `PaymentReversed`  | Dispatch this when a payment is reversed   | `response` (ReversePaymentResponseDTO), `paymentReference` (string)                                                                  |
 
 ## Data Transfer Objects
 

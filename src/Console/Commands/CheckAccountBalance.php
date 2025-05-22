@@ -18,7 +18,7 @@ use function Laravel\Prompts\table;
 
 class CheckAccountBalance extends Command
 {
-    protected $signature = 'cgrate:balance {--debug : Show detailed debug information}';
+    protected $signature = 'cgrate:balance';
 
     protected $description = 'Check current CGrate account balance';
 
