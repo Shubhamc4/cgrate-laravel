@@ -88,7 +88,7 @@ CGRATE_TEST_MODE=true                   # Set to false for production
 | ------------------------------------------------------ | ------------------------------ |
 | `getAccountBalance()`                                  | Get the account balance        |
 | `processCustomerPayment(PaymentRequestDTO $payment)`   | Process a new customer payment |
-| `queryTransactionStatus(string $transactionReference)` | Check the status of a payment  |
+| `queryCustomerPayment(string $transactionReference)`   | Check the status of a payment  |
 | `reverseCustomerPayment(string $paymentReference)`     | Reverse a customer payment     |
 
 ## Usage
@@ -158,7 +158,7 @@ use CGrate\Laravel\Facades\CGrate;
 
 // Query transaction status
 try {
-    $response = CGrate::queryTransactionStatus('INVOICE-123');
+    $response = CGrate::queryCustomerPayment('INVOICE-123');
 
     if ($response->isSuccessful()) {
         echo 'Transaction Status: Success';

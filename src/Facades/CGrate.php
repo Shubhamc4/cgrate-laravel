@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Facade;
  * processCustomerPayment(\CGrate\Php\DTOs\PaymentRequestDTO $request)
  * Process a payment for a customer
  * @method  static  \CGrate\Php\DTOs\PaymentResponseDTO
- * queryTransactionStatus(string $transactionReference)  Query the status of a transaction
+ * queryCustomerPayment(string $transactionReference)  Query the status of a transaction
  * @method  static  \CGrate\Php\DTOs\ReversePaymentResponseDTO
  * reverseCustomerPayment(string $paymentReference)  Reverse a previously processed payment
  * @method  static  string generateTransactionReference(string $prefix = 'CG')
