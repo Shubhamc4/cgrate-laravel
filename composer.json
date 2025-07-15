@@ -1,6 +1,5 @@
 {
   "name": "shubhamc4/cgrate-laravel",
-  "version": "2.0.0",
   "description": "Laravel package for integrating with CGrate payment service (543 Konse Konse)",
   "type": "library",
   "license": "MIT",
