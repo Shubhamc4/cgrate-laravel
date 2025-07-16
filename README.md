@@ -12,12 +12,16 @@ A Laravel package for integrating with the CGrate payment service to process mob
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Configuration](#configuration)
-- [Available Methods](#available-methods)
+- [Available Soap Methods](#available-soap-methods)
+- [Available Static Helper Methods](#available-static-helper-methods)
 - [Usage](#usage)
-  - [Getting Account Balance](#getting-account-balance)
-  - [Processing a Payment](#processing-a-payment)
-  - [Checking Transaction Status](#checking-transaction-status)
-  - [Reversing a Payment](#reversing-a-payment)
+  - [Check Account Balance](#check-account-balance)
+  - [Get Available Cash Deposit Issuers](#get-available-cash-deposit-issuers)
+  - [Process Customer Payment](#process-customer-payment)
+  - [Query Customer Payment](#query-customer-payment)
+  - [Process Cash Deposit](#process-cash-deposit)
+  - [Generate Transaction Reference](#generate-transaction-reference)
+  - [Get Customer Account Issuer Name](#get-customer-issuer-name)
 - [Events](#events)
 - [Data Transfer Objects](#data-transfer-objects)
 - [Artisan Commands](#artisan-commands)
@@ -82,14 +86,22 @@ CGRATE_PASSWORD=your_password           # Your CGrate account password
 CGRATE_TEST_MODE=true                   # Set to false for production
 ```
 
-## Available Methods
+## Available Soap Methods
 
-| Method                                                 | Description                    |
-| ------------------------------------------------------ | ------------------------------ |
-| `getAccountBalance()`                                  | Get the account balance        |
-| `processCustomerPayment(PaymentRequestDTO $payment)`   | Process a new customer payment |
-| `queryCustomerPayment(string $transactionReference)`   | Check the status of a payment  |
-| `reverseCustomerPayment(string $paymentReference)`     | Reverse a customer payment     |
+| Method                                               | Description                            |
+| ---------------------------------------------------- | -------------------------------------- |
+| `getAccountBalance()`                                | Get the account balance                |
+| `getAvailableCashDepositIssuers()`                   | Get Available Cash Deposit Issuers     |
+| `processCustomerPayment(PaymentRequestDTO $payment)` | Process a new customer payment         |
+| `queryCustomerPayment(string $transactionReference)` | Check the status of a customer payment |
+| `processCashDeposit(string $paymentReference)`       | Process Cash Deposit                   |
+
+## Available Static Helper Methods
+
+| Method                                                | Description                             |
+| ----------------------------------------------------- | --------------------------------------- |
+| `generateTransactionReference(string $prefix = 'CG')` | Generate a unique transaction reference |
+| `getCustomerIssuerName(string $customerAccount)`      | Get Customer Account Issuer Name        |
 
 ## Usage
 
@@ -109,6 +121,19 @@ try {
     }
 } catch (\CGrate\Php\Exceptions\CGrateException $e) {
     echo 'API Error: ' . $e->getMessage();
+}
+```
+
+### Get Available Cash Deposit Issuers
+
+```php
+use CGrate\Laravel\Facades\CGrate;
+
+try {
+    $response = CGrate::getAvailableCashDepositIssuers();
+    print_r($response);
+} catch (\CGrate\Php\Exceptions\CGrateException $e) {
+    echo "Exception: " . $e->getMessage();
 }
 ```
 
@@ -151,7 +176,7 @@ try {
 }
 ```
 
-### Checking Transaction Status
+### Query Customer Payment
 
 ```php
 use CGrate\Laravel\Facades\CGrate;
@@ -161,8 +186,7 @@ try {
     $response = CGrate::queryCustomerPayment('INVOICE-123');
 
     if ($response->isSuccessful()) {
-        echo 'Transaction Status: Success';
-        echo 'Payment ID: ' . $response->paymentID;
+        echo 'Transaction reference: ' . $response->transactionReference;
     } else {
         echo 'Status query failed: ' . $response->responseMessage;
     }
@@ -171,22 +195,40 @@ try {
 }
 ```
 
-### Reversing a Payment
+### Process Cash Deposit
 
 ```php
+use CGrate\Php\DTOs\CashDepositRequestDTO;
 use CGrate\Laravel\Facades\CGrate;
 
-// Reverse a payment
+$customerAccount = '260970000000';  // Customer account number
+
+// Create a cash deposit request
+$cashDeposit = new CashDepositRequestDTO(
+    transactionAmount: 10.50,
+    customerAccount: $customerAccount,
+    issuerName: CGrate::getCustomerIssuerName($customerAccount),
+    depositorReference: 'INVOICE-123'
+);
+
+// Or use the factory method for convenience
+$cashDeposit = CashDepositRequestDTO::create(
+    transactionAmount: 10.50,
+    customerAccount: $customerAccount,
+    issuerName: CGrate::getCustomerIssuerName($customerAccount),
+    depositorReference: 'INVOICE-123'
+);
+
 try {
-    $response = CGrate::reverseCustomerPayment('INVOICE-123');
+    $response = CGrate::processCashDeposit($cashDeposit);
 
     if ($response->isSuccessful()) {
-        echo 'Payment reversed successfully';
+        echo "Depositor reference: " . $response->depositorReference;
     } else {
-        echo 'Reversal failed: ' . $response->responseMessage;
+        echo "Cash deposit failed: " . $response->responseMessage;
     }
 } catch (\CGrate\Php\Exceptions\CGrateException $e) {
-    echo 'API Error: ' . $e->getMessage();
+    echo "Exception: " . $e->getMessage();
 }
 ```
 
@@ -194,11 +236,11 @@ try {
 
 The package includes following events that you can dispatch and listen for in your application:
 
-| Event              | Description                             | Properties                                                                                                                           |
-| ------------------ | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `PaymentProcessed` | Dispatch this when a payment is successful | `response` (PaymentResponseDTO), `paymentData` (array)                                                                               |
-| `PaymentFailed`    | Dispatch this when a payment fails         | `request` (PaymentRequestDTO), `errorMessage` (string), `responseCode` (ResponseCode or null), `exception` (CGrateException or null) |
-| `PaymentReversed`  | Dispatch this when a payment is reversed   | `response` (ReversePaymentResponseDTO), `paymentReference` (string)                                                                  |
+| Event              | Description                                     | Properties                                                                                                                           |
+| ------------------ | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `PaymentProcessed` | Dispatch this when a payment is successful      | `response` (PaymentResponseDTO), `paymentData` (array)                                                                               |
+| `PaymentFailed`    | Dispatch this when a payment fails              | `request` (PaymentRequestDTO), `errorMessage` (string), `responseCode` (ResponseCode or null), `exception` (CGrateException or null) |
+| `CashDeposit`      | Dispatch this when a cash deposit is successful | `response` (CashDepositResponse), `cashDepositData` (array)                                                                          |
 
 ## Data Transfer Objects
 
@@ -212,7 +254,7 @@ The package uses DTOs to handle API requests and responses:
 
 - `BalanceResponseDTO`: Contains account balance information
 - `PaymentResponseDTO`: Contains payment response information
-- `ReversePaymentResponseDTO`: Contains payment reversal response information
+- `CashDepositResponse`: Contains payment reversal response information
 
 ## Artisan Commands
 
